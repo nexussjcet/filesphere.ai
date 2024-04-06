@@ -1,3 +1,4 @@
+import { chainRouter } from "@/server/api/routers/chain";
 import { TRPCContext, createCallerFactory, createTRPCRouter } from "@/server/api/trpc";
 
 /**
@@ -6,6 +7,7 @@ import { TRPCContext, createCallerFactory, createTRPCRouter } from "@/server/api
  * All routers added in /api/routers should be manually added here.
  */
 export const appRouter = createTRPCRouter({
+  chain: chainRouter,
 });
 
 // export type definition of API
