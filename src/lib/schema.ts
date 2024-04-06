@@ -112,3 +112,49 @@ export const Schema = {
     .returns(z.object({ fileSource: z.string() })),
 } satisfies AvailableActions;
 
+export const AvailableActionsZod = z.object(Schema);
+
+export const GetZodParam = <K extends keyof RawAvailableActions>(key: K) => {
+  return Schema[key]?._def.args.items[0];
+};
+
+export const GetZodReturn = <K extends keyof RawAvailableActions>(key: K) => {
+  return Schema[key]._def.returns;
+};
+// : Parameters<Infer<RawAvailableActions[K]>>
+export type RawAvailableActions = typeof Schema;
+export type RawAvailableActionsKeys = keyof typeof Schema;
+
+export type GetActionParam<K extends keyof RawAvailableActions> = Parameters<
+  Infer<RawAvailableActions[K]>
+>[0];
+export type GetActionReturn<K extends keyof RawAvailableActions> = ReturnType<
+  Infer<RawAvailableActions[K]>
+>;
+
+export type AFC<K extends keyof RawAvailableActions> = React.FunctionComponent<{
+  data: GetActionReturn<K>;
+}>;
+
+export type PermissionZod<S extends AvailableActions = typeof Schema> =
+  z.ZodObject<{ [k in keyof S]: z.ZodBoolean }>;
+
+export const permissionZod = z.object(
+  Object.keys(Schema).reduce(
+    (acc, key) => ({ ...acc, [key]: z.boolean() }),
+    {},
+  ),
+) as PermissionZod;
+
+export const AllowALL: { [k in keyof RawAvailableActions]: true } = {
+  convertFileFormat: true,
+  readFile: true,
+  writeFile: true,
+  openFile: true,
+  summarizeText: true,
+  sentEmail: true,
+  findContact: true,
+  findOneContact: true,
+  searchFile: true,
+  searchOneFile: true,
+};
