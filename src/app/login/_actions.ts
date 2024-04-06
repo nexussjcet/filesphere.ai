@@ -12,6 +12,6 @@ export const handleSubmit = async () => {
 
 export async function getUserDeviceInfo(): Promise<string | undefined> {
   const userOS: string = os.type();
-  const device = OSList.find((os) => userOS.includes(os)) || "Unknown Device";
+  const device = OSList.find((os) => userOS.includes(os)) ?? "Unknown Device";
   return device;
 }

@@ -1,4 +1,4 @@
-import NextAuth, { type DefaultSession } from "next-auth";
+import NextAuth, { type NextAuthConfig, type DefaultSession } from "next-auth";
 import Google from "next-auth/providers/google";
 import { env } from "./env";
 
@@ -12,18 +12,21 @@ declare module "next-auth" {
   }
 }
 
-export const {
-  handlers: { GET, POST },
-  signIn,
-  signOut,
-  auth,
-} = NextAuth({
+export const NextConfig = {
   providers: [
     Google({
       clientId: env.GOOGLE_CLIENT_ID,
       clientSecret: env.GOOGLE_SECRET,
     }),
   ],
+} satisfies NextAuthConfig;
+
+export const {
+  handlers: { GET, POST },
+  signIn,
+  signOut,
+  auth,
+} = NextAuth({
   callbacks: {
     async jwt({ token, user, account }) {
       if (user) {
@@ -45,4 +48,5 @@ export const {
     },
   },
   session: { strategy: "jwt" },
+  ...NextConfig,
 });
