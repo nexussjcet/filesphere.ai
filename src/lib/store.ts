@@ -4,25 +4,28 @@ import { create } from "zustand";
 type State = {
   userState: UserStateType;
   updateState: (state: Partial<UserStateType>) => void;
-  updateStateInstance: (state: Partial<UserStateType>) => void;
+  updateStateInstance: (
+    key: keyof UserStateType,
+    value: UserStateType[typeof key],
+  ) => void;
 };
 
-export const BrowserState = create<State>((set) => ({
-  userState: {
-    listOfContactsAvailable: [],
-    select_A_File: "",
-    selected_A_Contact: ""
-  },
-  updateState: (state) =>
-    set({
+export const UserBrowserState = create<State>((set) => ({
+  userState: {},
+  updateState: (newState) =>
+    set((state) => ({
       userState: {
-        listOfContactsAvailable: state.listOfContactsAvailable ?? [],
-        select_A_File: state.select_A_File ?? "",
-        selected_A_Contact: state.selected_A_Contact ?? "",
+        ...state.userState,
+        ...newState,
       },
-    }),
-  updateStateInstance: (state) =>
-    set((prev) => ({ userState: { ...prev.userState, ...state } })),
+    })),
+  updateStateInstance: (key, value) =>
+    set((state) => ({
+      userState: {
+        ...state.userState,
+        [key]: value,
+      },
+    })),
 }));
 
 export const urlUpdation = create<{

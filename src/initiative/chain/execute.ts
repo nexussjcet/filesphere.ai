@@ -51,7 +51,8 @@ export const executeChainActions = async <
 
   const setOfFunctions = init.functions(
     config.params,
-    response.state.validated?.data as unknown,
+    response.state.validated?.data,
+    response.state.raw
   );
 
   const storage = new Map();

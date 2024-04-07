@@ -8,7 +8,7 @@ import { infer as Infer, ZodObject } from "zod";
 import { Schema, getZodCombined, implement } from "../actions";
 import { chainedMessages, defaultPrompt, system_message } from "../lib/prompt";
 import { stateDescription } from "../lib/utils";
-import { safeParse, safeParseState } from "../lib/validation";
+import { rawSafeParseState, safeParse, safeParseState } from "../lib/validation";
 import { State, StateToValues } from "../state";
 import { AvailableActions, getZodChainedCombined, implementChain } from "./../chain";
 
@@ -16,6 +16,7 @@ export type ResponseType<S extends Schema, U extends State> = {
   input: string;
   state: {
     raw: Partial<Infer<ZodObject<U>>>;
+    partial?: ReturnType<typeof rawSafeParseState<U>>
     validated?: ReturnType<typeof safeParseState>;
   };
   response: {
@@ -24,7 +25,9 @@ export type ResponseType<S extends Schema, U extends State> = {
   };
 };
 
-export const createExtraction = async <U extends State,A extends AvailableActions, S extends Schema, P>(
+export const createExtraction = async <U extends State, A extends AvailableActions, S extends Schema, P>(
+  schema: A | S,
+  state: U,
   llm: BaseLanguageModel,
   init: ReturnType<typeof implement<U, S, P> | typeof implementChain<A, S, P>> ,
   zod: Pick<
@@ -39,7 +42,7 @@ export const createExtraction = async <U extends State,A extends AvailableAction
   const { combinedZod, stateZod } = zod;
 
   type InvokeConfig = {
-    state?: StateToValues<U>;
+    state?: Partial<StateToValues<U>>;
     reInvokeLimit?: number;
   };
 
@@ -47,7 +50,8 @@ export const createExtraction = async <U extends State,A extends AvailableAction
     Input: string,
     config?: InvokeConfig
   ): Promise<ResponseType<S, U>> => {
-    const validatedState = safeParseState(stateZod, config?.state);
+    const validatedState = safeParseState<U>(stateZod, config?.state);
+    const rawValidated = rawSafeParseState<U>(stateZod, config?.state);
 
     const promptText = await prompt.invoke({
       type_description,
@@ -67,7 +71,7 @@ export const createExtraction = async <U extends State,A extends AvailableAction
       invokeOptions
     )) as string;
 
-    const validated = safeParse(combinedZod, response);
+    const validated = safeParse<S>(combinedZod, response);
 
     return {
       input: Input,
@@ -77,6 +81,7 @@ export const createExtraction = async <U extends State,A extends AvailableAction
       },
       state: {
         raw: config?.state ?? {},
+        partial: rawValidated,
         validated: validatedState,
       },
     };

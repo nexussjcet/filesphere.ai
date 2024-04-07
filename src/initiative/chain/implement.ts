@@ -2,7 +2,7 @@ import { Example } from "..";
 import { prepareExample, prepareChatFromExample } from "../lib/prompt";
 import { State, StateToValues } from "../state";
 import { AvailableActions, ChainExample, ChainFunctions, getZodChainedCombined } from "./chained";
-import { infer as Infer } from "zod";
+import { infer as Infer, ZodObject } from "zod";
 
 
 export const implementChain = <A extends AvailableActions, U extends State, P>(
@@ -11,7 +11,6 @@ export const implementChain = <A extends AvailableActions, U extends State, P>(
   materials: ReturnType<typeof getZodChainedCombined<A, U>>,
   config: {
     functions: ChainFunctions<A, U, P>;
-    state?: U,
     examples?: ChainExample<A, U>;
     typeName?: string;
   }

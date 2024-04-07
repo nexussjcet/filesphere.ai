@@ -21,16 +21,23 @@ const text = z.object({
 export const UserState = {
   listOfContactsAvailable: z
     .array(z.object({ name: z.string(), email: z.string() }))
-    .optional()
-    .describe("List of contacts available to user"),
+    .describe("List of contacts available to user")
+    .optional(),
   selected_A_Contact: z
     .string()
-    .optional()
-    .transform((x) => `User selected a contact with  name ${x} in UI`),
-  select_A_File: z
+    .transform((x) => `User selected a contact with  name ${x} in UI`)
+    .optional(),
+  selected_A_File: z
     .string()
-    .optional()
-    .transform((x) => `User selected a file with  name ${x} in UI`),
+    .transform((x) => `User selected a file with  name ${x} in UI`)
+    .optional(),
+  selected_A_Directory: z
+    .object({ directory: z.string(), files: z.array(z.string()) })
+    .transform(
+      (x) =>
+        `User selected a directory named '${x.directory}' in UI with available files\n\t > ${x.files.join("\n\t> ")}`,
+    )
+    .optional(),
 } satisfies State;
 
 export type UserStateType = Infer<z.ZodObject<typeof UserState>>;
@@ -58,7 +65,7 @@ export const Schema = {
   readFile: z
     .function()
     .describe(
-      "When action requires to read some file from source, to continue in execution order. ",
+      "When action requires to read a file from source, to continue in execution order. ",
     )
     .args(z.object({ fileSource: z.string(), fileSourceType: fileEnum }))
     .returns(z.object({ text: z.string() })),
@@ -75,6 +82,30 @@ export const Schema = {
         text: z.string().optional(),
       }),
     )
+    .returns(status),
+
+  deleteFile: z
+    .function()
+    .describe(
+      "When action requires to delete some old file from source, to continue in execution order.",
+    )
+    .args(z.object({ fileSource: z.string() }))
+    .returns(status),
+
+  removeDirectory: z
+    .function()
+    .describe(
+      "When action requires to remove some directory from source, to continue in execution order.",
+    )
+    .args(z.object({ directory: z.string() }))
+    .returns(status),
+
+  createDirectory: z
+    .function()
+    .describe(
+      "When action requires to create some directory to destination, to continue in execution order.",
+    )
+    .args(z.object({ directory: z.string() }))
     .returns(status),
 
   openFile: z
@@ -170,4 +201,7 @@ export const AllowALL: { [k in keyof RawAvailableActions]: true } = {
   findOneContact: true,
   searchFile: true,
   searchOneFile: true,
+  deleteFile: true,
+  removeDirectory: true,
+  createDirectory: true,
 };
