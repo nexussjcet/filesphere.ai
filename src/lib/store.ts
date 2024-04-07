@@ -1,17 +1,35 @@
-import { type UserStateType } from "@/lib/schema";
+import { UserStateTypeRaw, type UserStateType } from "@/lib/schema";
 import { create } from "zustand";
 
+type StateType = Partial<UserStateTypeRaw>
+
 type State = {
-  userState: UserStateType;
-  updateState: (state: Partial<UserStateType>) => void;
+  userState: StateType;
+  selectFile: (files: string[]) => void;
+  updateState: (state: Partial<StateType>) => void;
+  clearState: () => void;
   updateStateInstance: (
-    key: keyof UserStateType,
-    value: UserStateType[typeof key],
+    key: keyof StateType,
+    value: StateType[typeof key],
   ) => void;
 };
 
 export const UserBrowserState = create<State>((set) => ({
-  userState: {},
+  userState: {
+  },
+  clearState: () => {
+    set((state) => ({
+      userState: {},
+    }));
+  },
+  selectFile: (files) => {
+    set((state) => ({
+      userState: {
+        ...state.userState,
+        selected_A_Files: files,
+      },
+    }));
+  },
   updateState: (newState) =>
     set((state) => ({
       userState: {

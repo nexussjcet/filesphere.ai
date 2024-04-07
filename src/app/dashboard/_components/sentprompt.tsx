@@ -26,11 +26,11 @@ const InputPrompt: FC<{
   }[];
 }> = ({ contacts, files }) => {
   const [text, setText] = useState<string>();
-  const { updateState } = TimeLineState()
+  const { updateData } = TimeLineState()
 
   const { mutateAsync: func } = api.chain.initiative.useMutation({
     onSuccess: (x) => {
-      updateState({
+      updateData({
         ...x
       });
     }

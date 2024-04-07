@@ -11,7 +11,7 @@ export default function Home() {
           <Sparkle/> <span className=" font-semibold">New</span> <span>Powered By FileSphere AI</span>
         </Badge>
         <h1 className=" text-6xl font-semibold">Transforming Files into Insights, Collaborate Anywhere</h1>
-        <p className='text-accent-foreground/40 font-medium max-w-screen-md text-balance'>Unleash AI's Potential for Deep Analysis, Summarization, and Collaborative Sharing.</p>
+        <p className='text-accent-foreground/40 font-medium max-w-screen-md text-balance'>Unleash AI&apos;s Potential for Deep Analysis, Summarization, and Collaborative Sharing.</p>
         <Suspense>
           <Login/>
         </Suspense>

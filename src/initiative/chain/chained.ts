@@ -1,4 +1,15 @@
-import { infer as Infer, ZodFunction, ZodOptional, ZodSchema, ZodTransformer, ZodTypeAny, z } from "zod";
+import {
+  infer as Infer,
+  ZodEffects,
+  ZodFunction,
+  ZodOptional,
+  ZodSchema,
+  ZodTransformer,
+  ZodTypeAny,
+  input as Input,
+  z,
+  ZodObject,
+} from "zod";
 import { printNode, zodToTs } from "zod-to-ts";
 import { wrapType } from "../lib/utils";
 import { State, StateToValues } from "../state";
@@ -73,20 +84,11 @@ ${ChainedActionsType}`;
     type,
   };
 };
-type RmTrans<T> = T extends ZodOptional<ZodTransformer<infer A>> ?  A : never
 
-type MakeItRaw<T extends State> = {
-  [K in keyof T]: RmTrans<T[K]>
-}
-
-export type ChainFunctions<
-  A extends AvailableActions,
-  U extends State,
-  P,
-> = (
+export type ChainFunctions<A extends AvailableActions, U extends State, P> = (
   param: P,
   state?: Partial<StateToValues<U>>,
-  rawState?: Partial<StateToValues<MakeItRaw<U>>>,
+  rawState?: Partial<Input<ZodObject<U>>>,
 ) => { [K in keyof A]: ToAsyncFunction<Infer<A[K]>> };
 
 export type ChainExample<A extends AvailableActions, U extends State> = {

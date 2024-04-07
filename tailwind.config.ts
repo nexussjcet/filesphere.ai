@@ -60,6 +60,7 @@ const config = {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+        xs: "calc(var(--radius) - 8px)",
       },
       keyframes: {
         "accordion-down": {
@@ -100,7 +101,7 @@ const config = {
         "accordion-up": "accordion-up 0.2s ease-out",
         "meteor-effect": "meteor 5s linear infinite",
         aurora: "aurora 60s linear infinite",
-        shimmer: "shimmer 2s linear infinite",
+        shimmer: "shimmer 1.6s linear infinite",
       },
     },
   },
@@ -137,3 +138,4 @@ function addVariablesForColors({ addBase, theme }: any) {
     ":root": newVars,
   });
 }
+      

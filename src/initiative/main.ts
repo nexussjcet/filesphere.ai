@@ -81,7 +81,7 @@ const init = implement(schema, combinedZod, {
   ],
 });
 
-const chain = await createExtraction(model, init, {
+const chain = await createExtraction(schema, userState, model, init, {
   combinedZod,
   stateZod,
 });

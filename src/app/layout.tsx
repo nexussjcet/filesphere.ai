@@ -5,6 +5,7 @@ import { Inter } from "next/font/google";
 import { TRPCReactProvider } from "@/trpc/react";
 import Nav from "@/components/madeup/nav";
 import { ThemeProvider } from "@/components/theme-provider";
+import { Toaster } from "@/components/ui/sonner"
 
 
 const inter = Inter({
@@ -36,6 +37,7 @@ export default function RootLayout({
           <main className="bg-gradient-to-b from-black via-primary/15 to-black">
             {children}
           </main>
+          <Toaster />
         </TRPCReactProvider>
         </ThemeProvider>
       </body>

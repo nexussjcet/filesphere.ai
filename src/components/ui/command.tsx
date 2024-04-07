@@ -7,6 +7,7 @@ import { Command as CommandPrimitive } from "cmdk"
 
 import { cn } from "@/lib/utils"
 import { Dialog, DialogContent } from "@/components/ui/dialog"
+import { Button } from "./button"
 
 const Command = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive>,
@@ -142,6 +143,35 @@ const CommandShortcut = ({
 }
 CommandShortcut.displayName = "CommandShortcut"
 
+type SimpleCommandItemProps = {selectable?:boolean, className?:string, children: React.ReactNode} 
+  & (({ asChild?: false } & React.HTMLAttributes<HTMLButtonElement>)
+  |  ({ asChild:   true } & React.HTMLAttributes<HTMLDivElement>))
+
+
+const SimpleCommandItem = ({className, selectable, asChild,...props}:SimpleCommandItemProps) => {
+  const Comp = asChild ? "div" : Button as unknown as React.ElementType
+  return ( 
+    <Comp className={cn(
+      "relative flex cursor-default focus-visible:outline select-none items-center rounded-md px-2 py-1.5 text-sm outline-1 outline-border",
+      className
+    )}
+    role="button" tabIndex={0}
+    {...props} />
+   );
+}
+
+const SimpleCommandGroup = ({className,...props}:React.HTMLAttributes<HTMLDivElement>) => {
+  return ( 
+    <div className={cn(
+      "overflow-hidden p-1 text-foreground [&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:py-1.5 [&_[cmdk-group-heading]]:text-xs [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group-heading]]:text-muted-foreground",
+      className
+    )}
+    {...props} />
+   );
+}
+
+CommandItem.displayName = CommandPrimitive.Item.displayName
+
 export {
   Command,
   CommandDialog,
@@ -152,4 +182,6 @@ export {
   CommandItem,
   CommandShortcut,
   CommandSeparator,
+  SimpleCommandGroup,
+  SimpleCommandItem,
 }

@@ -34,8 +34,10 @@ export const executeChainActions = async <
       : Parameters<ChainFunctions<A, U, P>>[0];
   },
 ): Promise<ChainReturn<A>> => {
-  if (!response.response.validated)
+  if (!response.response.validated) {
+    console.log(JSON.stringify(response, null, 2))
     throw new Error("Response is not validated");
+  }
 
   const permissions = config?.permissions ?? undefined;
 

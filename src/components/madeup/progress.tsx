@@ -63,7 +63,7 @@ export type TimelineProps = Partial<ChainReturn<typeof Schema>>;
 
 const Timeline: React.FC = () => {
 
-  const { state: data } = TimeLineState()
+  const { data } = TimeLineState()
   return (
     <ol className="timeline max-w-700 mx-auto flex flex-col border-l-2 border-gray-200 py-8 pl-8 text-base">
       {data && Object.entries(data).map(([key, value], index) => {

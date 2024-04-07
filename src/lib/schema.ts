@@ -1,7 +1,7 @@
 import { type AvailableActions } from "@/initiative/chain";
 import { type State } from "@/initiative/state";
 import type { CTX } from "@/server/api/root";
-import z, { type infer as Infer } from "zod";
+import z, { input as Input, type infer as Infer } from "zod";
 
 const fileEnum = z.enum(["markdown", "html"]);
 
@@ -24,13 +24,17 @@ export const UserState = {
     .array(z.object({ name: z.string(), email: z.string() }))
     .describe("List of contacts available to user")
     .optional(),
-  selected_A_Contact: z
-    .string()
-    .transform((x) => `User selected a contact with  name ${x} in UI`)
+  recentFilesAccessed: z
+    .array(z.string())
+    .describe("List of files recently accessed by user")
     .optional(),
-  selected_A_File: z
-    .string()
-    .transform((x) => `User selected a file with  name ${x} in UI`)
+  selected_A_Contacts: z
+    .array(z.string())
+    .transform((x) => `User selected his contacts with names ${x.join(", ")} in UI`)
+    .optional(),
+  selected_A_Files: z
+    .array(z.string())
+    .transform((x) => `User selected a file with  name ${x.join(", ")} in UI`)
     .optional(),
   selected_A_Directory: z
     .object({ directory: z.string(), files: z.array(z.string()) })
@@ -42,6 +46,7 @@ export const UserState = {
 } satisfies State;
 
 export type UserStateType = Infer<z.ZodObject<typeof UserState>>;
+export type UserStateTypeRaw = Input<z.ZodObject<typeof UserState>>;
 
 export type ExtraParams = {
   ctx: CTX;

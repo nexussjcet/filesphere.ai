@@ -29,7 +29,7 @@ export const init = implementChain(Schema, UserState, materials, {
     }) => {
       return { text };
     },
-    unavailableAction: ({actionDescription}) => ({status: "success", message: `Action '${actionDescription}' is not available`}),
+    unavailableAction: ({actionDescription}) => ({status: "failed", message: `Action '${actionDescription}' is not available`}),
     readFile: async () => await Promise.resolve({ text: "success" }),
     findOneContact: async ({ name }) => {
       return { name: "unknown", email: "unknown" };
