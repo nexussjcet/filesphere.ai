@@ -6,7 +6,7 @@ ${typeName ? `\t${typeName}: ` : ""}${str}
 };
 
 export const stateDescription = (
-  state: Object,
+  state: object,
   title = "Current State:",
   sep = "\n\t"
 ) => {

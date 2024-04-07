@@ -49,7 +49,7 @@ import {
 import Link from "next/link";
 import { Providers } from "./provider";
 import SignoutButton from "./_components/signout";
-import SearchItems from "./_components/SearchItems";
+import SearchItems, { File } from "./_components/SearchItems";
 import Timeline from "@/components/madeup/progress";
 import { redirect } from "next/navigation";
 import {
@@ -69,8 +69,13 @@ export default async function RootLayout({
 
   if (!session) return redirect("/");
 
-  const files = await listGoogleDriveFiles();
+  const files = await listGoogleDriveFiles() as File["files"]
   const contacts = await listGoogleContacts();
+
+  const contactSorted = contacts ? contacts.map(c => ({
+    name: (c?.names ?? [])[0]?.givenName ?? "unknown",
+    email: (c?.emailAddresses ?? [])[0]?.value ?? "unknown",
+  })) : []
 
   const getRandomColor = () => {
     const colors = [
@@ -347,7 +352,7 @@ export default async function RootLayout({
                     <legend className="-ml-1 px-1 text-sm font-medium">
                       Files
                     </legend>
-                    {/* <SearchItems files={files} /> */}
+                    {files && <SearchItems files={files} />}
                   </fieldset>
                   <fieldset className="grid gap-6 rounded-lg border bg-white p-4">
                     <legend className="-ml-1 px-1 text-sm font-medium">
@@ -359,19 +364,19 @@ export default async function RootLayout({
                           No contacts found
                         </div>
                       ) : (
-                        contacts?.map((contact, i) => (
-                          <TooltipProvider key={i}>
+                        contactSorted.map((contact, i) => (
+                          <TooltipProvider key={contact.email}>
                             <Tooltip>
                               <TooltipTrigger asChild>
                                 <div
                                   className={`flex h-10 w-10 cursor-pointer items-center justify-center rounded-full   text-opacity-10 ${getRandomColor()}`}
                                 >
-                                  {contact.names?.[0]?.givenName?.slice(0, 1) ??
+                                  {contact.name.slice(0, 1) ??
                                     ""}
                                 </div>
                               </TooltipTrigger>
                               <TooltipContent>
-                                <p>{contact.names?.[0]?.givenName}</p>
+                                <p>{contact.name}</p>
                               </TooltipContent>
                             </Tooltip>
                           </TooltipProvider>

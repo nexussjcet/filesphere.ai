@@ -1,10 +1,4 @@
-import {
-  infer as Infer,
-  ZodFunction,
-  ZodSchema,
-  ZodTypeAny,
-  z
-} from "zod";
+import { infer as Infer, ZodFunction, ZodSchema, ZodTypeAny, z } from "zod";
 import { printNode, zodToTs } from "zod-to-ts";
 import { wrapType } from "../lib/utils";
 import { State, StateToValues } from "../state";
@@ -13,15 +7,16 @@ import { AsyncFunction, ToAsyncFunction } from "../type";
 export type AvailableActions = Record<
   string,
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ZodFunction<any, any>
 >;
 
 export const getZodChainedCombined = <
   S extends AvailableActions,
-  U extends State
+  U extends State,
 >(
   schema: S,
-  state?: U
+  state?: U,
 ) => {
   const actions: Record<string, ZodSchema> = {};
   const AvailableActions: string[] = [];
@@ -31,13 +26,14 @@ export const getZodChainedCombined = <
   const actionZodValue = [] as unknown as ActionZodValue;
 
   for (const [key, value] of Object.entries(schema)) {
-    const zodValue = value._def.args._def.items[0];
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    const zodValue = (value._def.args ?? z.any())._def?.items[0] as ZodSchema;
     actions[key] = zodValue;
 
     actionZodValue.push(
       z.object({
         [key]: zodValue,
-      })
+      }),
     );
 
     const { node: type } = zodToTs(zodValue, key);
@@ -45,14 +41,14 @@ export const getZodChainedCombined = <
     RecordOfActions[key] = typeString;
     const description = value._def.description;
     RecordOfActionsType.push(
-      `${description ? `\n// ${description}\n` : ""}type ${key} = ${typeString}`
+      `${description ? `\n// ${description}\n` : ""}type ${key} = ${typeString}`,
     );
     AvailableActions.push(key);
   }
 
   const stateZod = state ? z.object(state).partial().optional() : undefined;
   const AvailableActionsType = `type AvailableActions = ${AvailableActions.map(
-    (x) => `{${x}: ${x}}`
+    (x) => `{${x}: ${x}}`,
   ).join(" | ")}`;
   const ChainedActionsType = "type OutputActions = Array<AvailableActions>";
 
@@ -78,9 +74,13 @@ ${ChainedActionsType}`;
   };
 };
 
-export type ChainFunctions<A extends AvailableActions, U extends State, P> = (
+export type ChainFunctions<
+  A extends AvailableActions,
+  U extends State,
+  P = unknown,
+> = (
   param: P,
-  state?: StateToValues<U>
+  state?: StateToValues<U> | unknown,
 ) => { [K in keyof A]: ToAsyncFunction<Infer<A[K]>> };
 
 export type ChainExample<A extends AvailableActions, U extends State> = {

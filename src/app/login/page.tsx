@@ -1,10 +1,11 @@
+import { Button } from "@/components/ui/button";
 import { handleSubmit } from "./_actions";
 
 const Social = () => {
   return (
     <>
       <form action={handleSubmit}>
-        <button>Sign in with Google</button>
+        <Button>Sign in with Google</Button>
       </form>
     </>
   );

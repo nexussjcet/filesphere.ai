@@ -33,7 +33,7 @@ async function setupOAuth2Client() {
   ) {
     const { credentials } = await oauth2Client.refreshAccessToken();
     const newAccessToken = credentials.access_token;
-    session.accessToken = newAccessToken!;
+    session.accessToken = newAccessToken ?? "";
   }
   return oauth2Client;
 }

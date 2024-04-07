@@ -23,6 +23,7 @@ export const executeChainActions = async <
   P,
 >(
   schema: A,
+  state: U,
   init: ReturnType<typeof implementChain<A, U, P>>,
   response: ResponseType<A, U>,
   // actionZod: ReturnType<typeof getZodChainedCombined<A, U>>["combinedZod"],
@@ -50,7 +51,7 @@ export const executeChainActions = async <
 
   const setOfFunctions = init.functions(
     config.params,
-    response.state.validated?.data,
+    response.state.validated?.data as unknown,
   );
 
   const storage = new Map();
@@ -72,11 +73,12 @@ export const executeChainActions = async <
     const [key, value] = func as [string, Parameters<Infer<A[keyof A]>>];
 
     if (typeof value === "object") {
+      // biome-ignore lint/complexity/noForEach: <explanation>
       Object.entries(value).forEach(([k, v]) => {
         if (typeof v === "string") {
           if (v.includes("unknown")) {
             const newV = storage.get(k);
-            value[k] = newV;
+            value[k as keyof typeof value] = newV;
           } else storage.set(k, v);
         }
       });
@@ -110,7 +112,7 @@ export const executeChainActions = async <
       await setOfFunctions[key as keyof typeof setOfFunctions](value);
 
     if (typeof valueFunc === "object") {
-      Object.entries(valueFunc).forEach(([k, v]) => {
+      Object.entries(valueFunc as object).forEach(([k, v]) => {
         storage.set(k, v);
       });
     }
@@ -127,6 +129,7 @@ export const executeChainActions = async <
 
   console.log(storage);
 
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   return Object.assign(
     {},
     ...setOfFunctionResult.map((el) => ({ [el.key]: el })),

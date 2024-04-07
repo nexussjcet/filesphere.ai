@@ -11,9 +11,7 @@ import { Button } from "../ui/button";
 import { CircleUser } from "lucide-react";
 import { CardDemo } from "@/components/madeup/permission_false";
 
-type Props = {};
-
-const Nav = (props: Props) => {
+const Nav = () => {
   const user = false;
   return (
     <>

@@ -52,7 +52,7 @@ export const createExtraction = async <U extends State,A extends AvailableAction
     const promptText = await prompt.invoke({
       type_description,
       state_description: validatedState?.data
-        ? stateDescription(validatedState.data, "", ", ")
+        ? stateDescription(validatedState.data as object, "", ", ")
         : "",
       format_instructions,
       input_prompt: Input,

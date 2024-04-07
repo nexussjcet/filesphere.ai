@@ -52,7 +52,7 @@ const userStateData = {
 
 const materials = getZodChainedCombined(Schema, userState);
 
-const init = implementChain(Schema, materials, {
+const init = implementChain(Schema, userState, materials, {
   functions: (x: FuncParam, y) => ({
     searchUserWithName: async ({ name }) => ({email:`${name}@gmail.com`}),
     sentEmailToUser: async ({email, text}) => `Senting email to ${email}, with subject: ${text}`,
@@ -102,7 +102,7 @@ const res = await chain.invoke("find Diane, and sent a summary of 'health care' 
 
 console.log(res.response.validated?.success ? res.response.validated.data : "");
 
-const x = await executeChainActions(Schema, init, res, {
+const x = await executeChainActions(Schema, userState, init as ReturnType<typeof implementChain>, res, {
   permissions: {
     searchUserWithName: true,
     sentEmailToUser: false,

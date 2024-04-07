@@ -7,8 +7,10 @@ import { ToAsyncFunction, ToFunctionFirstParam } from "../type";
 
 export type Schema = Record<
   string,
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-  ZodSchema | ZodFunction<any, any> | ZodOptional<ZodFunction<any, any>>
+  
+  
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+ZodSchema  | ZodFunction<any, any> | ZodOptional<ZodFunction<any, any>>
 >;
 
 export type ExtractFunctions<A extends Schema> = {
@@ -36,6 +38,7 @@ export const getZodCombined = <S extends Schema, U extends State,>(schema: S, st
     const isFunc = "args" in value._def;
     const isOptionalFunc = "unwrap" in value && "args" in value._def.innerType;
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const newValue: ZodSchema = isFunc
       ? value._def.args._def.items[0]
       : isOptionalFunc
@@ -43,7 +46,7 @@ export const getZodCombined = <S extends Schema, U extends State,>(schema: S, st
       : value;
 
     (isFunc || isOptionalFunc ? actions : objects)[key] = newValue.describe(
-      value._def.description || ""
+      value._def.description ?? ""
     );
   }
 
@@ -79,12 +82,12 @@ export const implement = <U extends State, A extends Schema, P>(
   const typeString = printNode(type);
   const type_description = wrapType(typeString, config.typeName ?? "data");
   const format_instructions = prepareExample(
-    (config.examples || []) as Example,
+    (config.examples ?? []) as Example,
     "State: "
   );
 
   const exampleChat = prepareChatFromExample(
-    (config.examples || []) as Example
+    (config.examples ?? []) as Example
   );
 
   
