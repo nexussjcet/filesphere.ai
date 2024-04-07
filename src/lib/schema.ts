@@ -12,6 +12,7 @@ const status = z.object({
     z.literal("in-progress"),
     z.literal("permission denied"),
   ]),
+  message: z.string().optional(),
 });
 
 const text = z.object({
@@ -155,6 +156,14 @@ export const Schema = {
     )
     .args(z.object({ fileName: z.string() }))
     .returns(z.object({ fileSource: z.string() })),
+
+  unavailableAction: z
+    .function()
+    .describe(
+      "When user wants do some action that is not available above, just ignore everything else and return that action description.",
+    )
+    .args(z.object({ actionDescription: z.string() }))
+    .returns(status),
 } satisfies AvailableActions;
 
 export const AvailableActionsZod = z.object(Schema);
@@ -204,4 +213,5 @@ export const AllowALL: { [k in keyof RawAvailableActions]: true } = {
   deleteFile: true,
   removeDirectory: true,
   createDirectory: true,
+  unavailableAction: true,
 };
