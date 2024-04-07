@@ -47,7 +47,6 @@ import {
   listGoogleDriveFiles,
 } from "@/app/dashboard/_actions";
 import Link from "next/link";
-import { Providers } from "./provider";
 import SignoutButton from "./_components/signout";
 import SearchItems, { File } from "./_components/SearchItems";
 import Timeline from "@/components/madeup/progress";
@@ -91,7 +90,6 @@ export default async function RootLayout({
   };
 
   return (
-    <Providers>
       <>
         <div className="grid h-screen w-full pl-[53px]">
           <aside className="inset-y fixed  left-0 z-20 flex h-full flex-col border-r">
@@ -399,6 +397,6 @@ export default async function RootLayout({
           </div>
         </div>
       </>
-    </Providers>
   );
 }
+

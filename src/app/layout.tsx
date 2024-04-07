@@ -4,6 +4,8 @@ import { Inter } from "next/font/google";
 
 import { TRPCReactProvider } from "@/trpc/react";
 import Nav from "@/components/madeup/nav";
+import { ThemeProvider } from "@/components/theme-provider";
+
 
 const inter = Inter({
   subsets: ["latin"],
@@ -24,10 +26,18 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`font-sans ${inter.variable}`}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          disableTransitionOnChange
+        >
         <TRPCReactProvider>
           <Nav />
-          {children}
+          <main className="bg-gradient-to-b from-black via-primary/15 to-black">
+            {children}
+          </main>
         </TRPCReactProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
