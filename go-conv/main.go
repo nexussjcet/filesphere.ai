@@ -25,7 +25,7 @@ func getFileType(filePath string) string {
 }
 
 func ReadXLSX(filePath string) {
-	f, err := excelize.OpenFile("car.xlsx")
+	f, err := excelize.OpenFile(filePath)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -67,6 +67,31 @@ func readDocs(filePath string) {
 	jsonString, _ := json.Marshal(output)
 	fmt.Println(string(jsonString))
 }
+
+// func getRecent() {
+//     dir := `C:\temp\`
+//     files, err := ioutil.ReadDir(dir)
+//     if err != nil {
+//         fmt.Fprintln(os.Stderr, err)
+//         os.Exit(1)
+//     }
+//     var modTime time.Time
+//     var names []string
+//     for _, fi := range files {
+//         if fi.Mode().IsRegular() {
+//             if !fi.ModTime().Before(modTime) {
+//                 if fi.ModTime().After(modTime) {
+//                     modTime = fi.ModTime()
+//                     names = names[:0]
+//                 }
+//                 names = append(names, fi.Name())
+//             }
+//         }
+//     }
+//     if len(names) > 0 {
+//         fmt.Println(modTime, names)
+//     }
+// }
 
 func main() {
 	if len(os.Args) != 2 {

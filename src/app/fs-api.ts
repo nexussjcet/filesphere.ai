@@ -100,7 +100,7 @@ const readFile = async (filePath: string) => {
             if (imageFiles.includes(fileext))
                 child = spawn('tesseract', [path, 'stdout']);
             else
-                child = spawn('../../go-conv/conv', [path])
+                child = spawn('./conv', [path])
 
             const body: any = await new Promise((resolve, reject) => {
                 let data = '';
