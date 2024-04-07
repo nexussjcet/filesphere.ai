@@ -51,7 +51,6 @@ import { Providers } from "./provider";
 import SignoutButton from "./_components/signout";
 import SearchItems from "./_components/SearchItems";
 import Timeline from "@/components/madeup/progress";
-import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import {
   DropdownMenu,
@@ -60,12 +59,16 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { CardDemo } from "@/components/madeup/permission_false";
 import InputPrompt from "./_components/sentprompt";
+import { auth } from "@/auth";
 export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const session = await getServerSession();
+  const session = await auth();
+
+  if (!session) return redirect("/");
+
   const files = await listGoogleDriveFiles();
   const contacts = await listGoogleContacts();
 
@@ -344,7 +347,7 @@ export default async function RootLayout({
                     <legend className="-ml-1 px-1 text-sm font-medium">
                       Files
                     </legend>
-                    <SearchItems files={files} />
+                    {/* <SearchItems files={files} /> */}
                   </fieldset>
                   <fieldset className="grid gap-6 rounded-lg border bg-white p-4">
                     <legend className="-ml-1 px-1 text-sm font-medium">
@@ -382,7 +385,7 @@ export default async function RootLayout({
                 <Badge variant="outline" className="absolute right-3 top-3">
                   Process
                 </Badge>
-                <InputPrompt />
+                {/* <InputPrompt /> */}
               </div>
               <div className="relative hidden flex-col items-start gap-8 md:flex">
                 {children}
