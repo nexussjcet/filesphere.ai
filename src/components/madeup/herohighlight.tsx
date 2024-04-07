@@ -24,7 +24,7 @@ export function HeroHighlightTitle() {
         Empower Your Productivity: Automate, Summarize, Convert, Email, and
         Create Slides with Ease
         <Highlight className="bg-gradient-to-r from-sky-400 to-yellow-400 bg-clip-text text-transparent dark:text-white">
-          Using Drive.ai
+          Using Filesphere.AI
         </Highlight>
       </motion.h1>
     </>
