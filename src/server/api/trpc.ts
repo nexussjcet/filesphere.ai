@@ -11,10 +11,18 @@ import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
 
-import { GetActionParam, GetActionReturn, RawAvailableActionsKeys } from "@/lib/schema";
-import { getServerAuthSession } from "@/server/auth";
+import {
+  GetActionParam,
+  GetActionReturn,
+  RawAvailableActionsKeys,
+} from "@/lib/schema";
 import { db } from "@/server/db";
-import { MutationProcedure, QueryProcedure, AnyProcedure } from "@trpc/server/unstable-core-do-not-import";
+import {
+  MutationProcedure,
+  QueryProcedure,
+  AnyProcedure,
+} from "@trpc/server/unstable-core-do-not-import";
+import { auth } from "@/auth";
 
 /**
  * 1. CONTEXT
@@ -29,7 +37,7 @@ import { MutationProcedure, QueryProcedure, AnyProcedure } from "@trpc/server/un
  * @see https://trpc.io/docs/server/context
  */
 export const createTRPCContext = async (opts: { headers: Headers }) => {
-  const session = await getServerAuthSession();
+  const session = await auth();
 
   return {
     db,
@@ -37,7 +45,7 @@ export const createTRPCContext = async (opts: { headers: Headers }) => {
     ...opts,
   };
 };
-export type TRPCContext = typeof createTRPCContext
+export type TRPCContext = typeof createTRPCContext;
 /**
  * 2. INITIALIZATION
  *
@@ -81,13 +89,15 @@ export const createCallerFactory = t.createCallerFactory;
 export const createTRPCRouter = t.router;
 type TRPCArg<K extends RawAvailableActionsKeys> = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  input: any
-  output:GetActionReturn<K>
-}
-type Func = (x:{
-  [key in Partial<RawAvailableActionsKeys>]:QueryProcedure<TRPCArg<key>> | MutationProcedure<TRPCArg<key>>
-}) => ReturnType<typeof createTRPCRouter>
-export const createTRPCRouterActions:Func = t.router
+  input: any;
+  output: GetActionReturn<K>;
+};
+type Func = (x: {
+  [key in Partial<RawAvailableActionsKeys>]:
+    | QueryProcedure<TRPCArg<key>>
+    | MutationProcedure<TRPCArg<key>>;
+}) => ReturnType<typeof createTRPCRouter>;
+export const createTRPCRouterActions: Func = t.router;
 
 /**
  * Public (unauthenticated) procedure
