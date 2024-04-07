@@ -6,8 +6,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
-const SearchItems = ({ files }: { files: { id: string; name: string }[] }) => {
-  const [file, setFile] = useState<{ id: string; name: string }[]>([]);
+export type File = {files:{ id: string; name: string }[]}
+
+const SearchItems = ({ files }: File ) => {
+  const [file, setFile] = useState<typeof files>([]);
   const pathname = usePathname();
 
   const searchFiles = (search: string) => {
@@ -33,12 +35,12 @@ const SearchItems = ({ files }: { files: { id: string; name: string }[] }) => {
         {file?.map((file) => (
           <Button
             key={file.id}
-            variant={pathname.includes(file.id) ? "" : "secondary"}
+            variant={pathname.includes(file.id) ? "default" : "secondary"}
             className="flex w-full w-full justify-start"
           >
             <Link
               href={
-                new URL("/dashboard/" + file.id, "http://localhost:3000").href
+                new URL(`/dashboard/${file.id}`, "http://localhost:3000").href
               }
               className="w-full text-left"
             >

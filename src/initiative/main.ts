@@ -39,8 +39,8 @@ const schema = {
 } satisfies Schema;
 
 type FuncParam = {
-  ctx: {};
-  extra: {};
+  ctx: unknown;
+  extra: unknown;
 };
 
 const { actionZod, combinedZod, dataZod, stateZod } = getZodCombined(
@@ -52,7 +52,9 @@ const init = implement(schema, combinedZod, {
   state: userState,
   functions: (z, y) => ({
     getUserData: (name) => `${name} ${y?.userDragged}`,
-    setName: () => {},
+    setName: () => {
+      console.log("Name changed");
+    },
     getTime: () => new Date(),
   }),
   examples: [

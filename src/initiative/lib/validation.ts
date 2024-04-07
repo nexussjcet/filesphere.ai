@@ -21,7 +21,7 @@ type SafeParse = (
 
 const regex = /<json>(.*?)<\/json>/s;
 export const safeParse = (schema:ZodSchema, response:string) => {
-  let json: undefined | Infer<ZodSchema>;
+let  json: object | undefined;
 
   try {
     if (!(schema && response)) throw new Error("No schema or response string provided");
@@ -51,7 +51,7 @@ export const safeParse = (schema:ZodSchema, response:string) => {
   }
 };
 
-export const safeParseState = (schema:ZodSchema | undefined, response:Object | undefined) => {
+export const safeParseState = (schema:ZodSchema | undefined, response:object | undefined) => {
   try {
     if (!(schema && response)) throw new Error("No schema or response string provided");
     const data:Infer<ZodSchema> = schema.parse(response);

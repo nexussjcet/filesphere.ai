@@ -7,10 +7,11 @@ import { infer as Infer } from "zod";
 
 export const implementChain = <A extends AvailableActions, U extends State, P>(
   schema: A,
+  state: U,
   materials: ReturnType<typeof getZodChainedCombined<A, U>>,
   config: {
     functions: ChainFunctions<A, U, P>;
-    state?: U;
+    state?: U,
     examples?: ChainExample<A, U>;
     typeName?: string;
   }

@@ -14,8 +14,8 @@ export const HeroHighlight = ({
   showGradient?: boolean;
   containerClassName?: string;
 }) => {
-  let mouseX = useMotionValue(0);
-  let mouseY = useMotionValue(0);
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
 
   function handleMouseMove({
     currentTarget,
@@ -23,7 +23,7 @@ export const HeroHighlight = ({
     clientY,
   }: React.MouseEvent<HTMLDivElement>) {
     if (!currentTarget) return;
-    let { left, top } = currentTarget.getBoundingClientRect();
+    const { left, top } = currentTarget.getBoundingClientRect();
 
     mouseX.set(clientX - left);
     mouseY.set(clientY - top);
@@ -90,7 +90,7 @@ export const Highlight = ({
         display: "inline",
       }}
       className={cn(
-        `relative inline-block rounded-lg   bg-gradient-to-r from-slate-200 to-white px-1 pb-1 dark:from-indigo-500 dark:to-purple-500`,
+        "relative inline-block rounded-lg   bg-gradient-to-r from-slate-200 to-white px-1 pb-1 dark:from-indigo-500 dark:to-purple-500",
         className,
       )}
     >

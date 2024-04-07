@@ -50,6 +50,7 @@ const executeActions = async <U extends State, S extends Schema, P>(
 
   const setOfFunctions = init.functions(
     config.params,
+    // @ts-ignore
     response.state.validated?.data
   );
 

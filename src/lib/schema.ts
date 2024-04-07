@@ -19,11 +19,25 @@ const text = z.object({
 });
 
 export const UserState = {
-  // listOfContacts: z.array(z.object({ name: z.string(), email: z.string() }))
+  listOfContactsAvailable: z
+    .array(z.object({ name: z.string(), email: z.string() }))
+    .optional()
+    .describe("List of contacts available to user"),
+  selected_A_Contact: z
+    .string()
+    .optional()
+    .transform((x) => `User selected a contact with  name ${x} in UI`),
+  select_A_File: z
+    .string()
+    .optional()
+    .transform((x) => `User selected a file with  name ${x} in UI`),
 } satisfies State;
+
+export type UserStateType = Infer<z.ZodObject<typeof UserState>>;
+
 export type ExtraParams = {
   ctx: CTX;
-  extra: object,
+  extra: object;
 };
 
 export const Schema = {
@@ -153,7 +167,6 @@ export const AllowALL: { [k in keyof RawAvailableActions]: true } = {
   openFile: true,
   summarizeText: true,
   sentEmail: true,
-  findContact: true,
   findOneContact: true,
   searchFile: true,
   searchOneFile: true,

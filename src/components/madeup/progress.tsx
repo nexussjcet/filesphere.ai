@@ -1,6 +1,5 @@
-import React from "react";
 import { ChainReturn } from "@/initiative/chain";
-import { Schema } from "@/lib/schema";
+import { GetActionReturn, Schema } from "@/lib/schema";
 import {
   FolderSync,
   NotebookPen,
@@ -9,24 +8,16 @@ import {
   Send,
   Shrink,
 } from "lucide-react";
-import { Card, CardContent } from "../ui/card";
-import { Button } from "../ui/button";
+import React, { ComponentProps } from "react";
 
-type TimelineData = {
-  value: string;
-  key: string;
-  iteration: number;
-  permission: boolean;
-  error?: string;
-};
-
-import { summarizeText as SummarizeText } from "../instances/summarizeText";
 import { convertFileFormat as ConvertFileFormat } from "../instances/convertFileFormat";
 import { findOneContact as FindOneContact } from "../instances/findContact";
 import { readFile as ReadFile } from "../instances/readFile";
 import { searchFile as SearchFile } from "../instances/searchFile";
-import { writeFile as WriteFile } from "../instances/writeFile";
 import { sentEmail as SentEmail } from "../instances/sentEmail";
+import { summarizeText as SummarizeText } from "../instances/summarizeText";
+import { writeFile as WriteFile } from "../instances/writeFile";
+import { TimeLineState } from "@/lib/timeline";
 
 const getComponent = (value: keyof ChainReturn<typeof Schema>) => {
   switch (value) {
@@ -68,30 +59,33 @@ const getLogo = (value: keyof ChainReturn<typeof Schema>) => {
       return null;
   }
 };
-type TimelineProps = ChainReturn<typeof Schema>;
+export type TimelineProps = Partial<ChainReturn<typeof Schema>>;
 
-const Timeline: React.FC<{ data: TimelineProps }> = ({ data }) => {
+const Timeline: React.FC = () => {
+
+  const { state: data } = TimeLineState()
   return (
     <ol className="timeline max-w-700 mx-auto flex flex-col border-l-2 border-gray-200 py-8 pl-8 text-base">
-      {Object.entries(data).map(([key, value], index) => {
+      {data && Object.entries(data).map(([key, value], index) => {
         const Component = getComponent(key as keyof ChainReturn<typeof Schema>);
 
         return (
-          <li key={index} className="timeline-item mt-8 flex gap-8">
+          <li key={key} className="timeline-item mt-8 flex gap-8">
             <span className="timeline-item-icon -ml-14 flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-gray-100 text-gray-400">
               {getLogo(key as keyof ChainReturn<typeof Schema>)}
             </span>
             <div
-              className={`timeline-item-description flex w-[300px] items-center rounded-xl ${
-                value.permission
-                  ? "bg-green-200"
-                  : !value.permission
-                    ? "bg-red-400"
-                    : ""
-              } p-5`}
+              className={`timeline-item-description flex w-[300px] items-center rounded-xl ${value.permission
+                ? "bg-green-200"
+                : !value.permission
+                  ? "bg-red-400"
+                  : ""
+                } p-5`}
             >
               <p className="flex items-center gap-5 rounded-xl">
-                {Component && <Component data={value.value} />}
+                {Component && ("value" in value) &&
+                  <Component // @ts-ignore
+                    data={value.value} />}
               </p>
             </div>
           </li>

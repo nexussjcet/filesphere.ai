@@ -1,5 +1,3 @@
-import { sendEmail } from "./_actions";
-
 import Image from "next/image";
 
 const Dash = async () => {
