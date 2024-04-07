@@ -1,14 +1,13 @@
-import { LoginForm } from "@/components/madeup/login";
-import React from "react";
+import { handleSubmit } from "./_actions";
 
-type Props = {};
-
-const page = (props: Props) => {
+const Social = () => {
   return (
-    <div className="flex h-screen w-screen items-center justify-center">
-      <LoginForm />
-    </div>
+    <>
+      <form action={handleSubmit}>
+        <button>Sign in with Google</button>
+      </form>
+    </>
   );
 };
 
-export default page;
+export default Social;

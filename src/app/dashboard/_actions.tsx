@@ -1,11 +1,26 @@
 "use server";
 
-import { getServerAuthSession } from "@/server/auth";
 import { google } from "googleapis";
 import { notFound } from "next/navigation";
 
+import { auth, signIn } from "@/auth";
+import os from "os";
+
+const OSList = ["Windows", "MacOS", "Linux", "Android", "iOS"];
+
+export const handleSubmit = async () => {
+  "use server";
+  return signIn("google");
+};
+
+export async function getUserDeviceInfo(): Promise<string | undefined> {
+  const userOS: string = os.type();
+  const device = OSList.find((os) => userOS.includes(os)) ?? "Unknown Device";
+  return device;
+}
+
 async function setupOAuth2Client() {
-  const session = await getServerAuthSession();
+  const session = await auth();
   if (!session) return notFound();
   const oauth2Client = new google.auth.OAuth2({});
   oauth2Client.setCredentials({
@@ -18,7 +33,7 @@ async function setupOAuth2Client() {
   ) {
     const { credentials } = await oauth2Client.refreshAccessToken();
     const newAccessToken = credentials.access_token;
-    session.accessToken = newAccessToken as string;
+    session.accessToken = newAccessToken!;
   }
   return oauth2Client;
 }
@@ -51,7 +66,6 @@ async function listGoogleContacts() {
     const contactsResponse = await people.people.connections.list({
       resourceName: "people/me",
       pageSize: 50,
-      // fields: "",
       personFields: "names,emailAddresses",
     });
     const contacts = contactsResponse.data.connections;
@@ -67,13 +81,13 @@ async function listGoogleContacts() {
 async function sendEmail(recipient: string, subject: string, body: string) {
   try {
     const oauth2Client = await setupOAuth2Client();
-    const session = await getServerAuthSession();
-    if (!oauth2Client) return;
+    const session = await auth();
+    if (!oauth2Client || !session?.user) return;
 
     const gmail = google.gmail({ version: "v1", auth: oauth2Client });
 
     const rawEmail = makeRawEmail(
-      session?.user.email ?? "",
+      session.user.email ?? " ",
       recipient,
       subject,
       body,
