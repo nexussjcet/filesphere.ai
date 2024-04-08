@@ -12,10 +12,7 @@ export const handleLogin = async () => {
 
 export const handleLogout = async () => {
   "use server";
-  return signOut({
-      redirect:true,
-       redirectTo: "/",
-  });
+  return signOut();
 };
 
 export async function getUserDeviceInfo(): Promise<string | undefined> {

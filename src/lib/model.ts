@@ -1,13 +1,27 @@
 import { TogetherAI } from "@langchain/community/llms/togetherai";
 import { createExtraction, chainedActionPrompt } from "@/initiative";
-import { type ExtraParams, Schema, UserState, AllowALL, UserStateType } from "./schema";
+import {
+  type ExtraParams,
+  Schema,
+  UserState,
+  AllowALL,
+  UserStateType,
+} from "./schema";
 import {
   executeChainActions,
   getZodChainedCombined,
   implementChain,
 } from "@/initiative/chain";
 import { sendEmail } from "@/app/dashboard/_actions";
-import { ZodObject, infer as Infer, ZodSchema, ZodOptional, ZodTransformer, z } from "zod";
+import {
+  ZodObject,
+  infer as Infer,
+  ZodSchema,
+  ZodOptional,
+  ZodTransformer,
+  z,
+} from "zod";
+import { makeDir, readFile, removeDir } from "@/app/fs-api";
 
 export const model = new TogetherAI({
   modelName: "mistralai/Mixtral-8x7B-Instruct-v0.1",
@@ -17,11 +31,30 @@ export const model = new TogetherAI({
 export const materials = getZodChainedCombined(Schema, UserState);
 export const init = implementChain(Schema, UserState, materials, {
   functions: (_extra, state, rawState) => ({
-    createDirectory: async () => await Promise.resolve({ status: "success" }),
-    createFile: async () => await Promise.resolve({ status: "success" }),
-    createFolder: async () => await Promise.resolve({ status: "success" }),
+    createDirectory: async ({ directory }) => {
+      const status = await makeDir(directory);
+
+      return {
+        status: status.success ? "success" : "failed",
+        message: status.success
+          ? "Successfully directory created"
+          : "Failed to create directory",
+      };
+    },
+    removeDirectory: async () => {
+      const res = await removeDir("directory");
+      return {
+        status: res.success ? "success" : "failed",
+        message: res.success
+          ? "Successfully directory removed"
+          : "Failed to remove directory",
+      };
+    },
+    readFile: async ({ fileSource }) => {
+      const data = await readFile(fileSource);
+      return { status: data.success, text: data.data! };
+    },
     deleteFile: async () => await Promise.resolve({ status: "success" }),
-    removeDirectory: async () => await Promise.resolve({ status: "success" }),
     convertFileFormat: async ({
       fileDestinationType,
       fileSourceType,
@@ -29,8 +62,10 @@ export const init = implementChain(Schema, UserState, materials, {
     }) => {
       return { text };
     },
-    unavailableAction: ({actionDescription}) => ({status: "failed", message: `Action '${actionDescription}' is not available`}),
-    readFile: async () => await Promise.resolve({ text: "success" }),
+    unavailableAction: ({ actionDescription }) => ({
+      status: "failed",
+      message: `Action '${actionDescription}' is not available`,
+    }),
     findOneContact: async ({ name }) => {
       return { name: "unknown", email: "unknown" };
       // console.log(state?.listOfContacts)
@@ -132,4 +167,3 @@ export const chain = await createExtraction(
 // });
 
 // console.log(x);
-

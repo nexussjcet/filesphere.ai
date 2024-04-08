@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	docconv "code.sajari.com/docconv/v2"
+	"github.com/go-pdf/fpdf"
 	"github.com/xuri/excelize/v2"
 )
 
@@ -52,7 +53,7 @@ func ReadXLSX(filePath string) {
 		}
 		sheetsData = append(sheetsData, data)
 	}
-	output := map[string]interface{}{"success": true, "body": sheetsData}
+	output := map[string]interface{}{"success": true, "data": sheetsData}
 	jsonString, _ := json.Marshal(output)
 	fmt.Println(string(jsonString))
 }
@@ -63,7 +64,7 @@ func readDocs(filePath string) {
 		errorResult()
 		return
 	}
-	output := map[string]interface{}{"success": true, "body": res.Body}
+	output := map[string]interface{}{"success": true, "data": res.Body}
 	jsonString, _ := json.Marshal(output)
 	fmt.Println(string(jsonString))
 }
@@ -93,20 +94,45 @@ func readDocs(filePath string) {
 //     }
 // }
 
-func main() {
-	if len(os.Args) != 2 {
+func readTxt(filePath string) string {
+	content, _ := os.ReadFile(filePath)
+	return string(content)
+}
+
+func writePdf(path string, contentFile string) {
+	pdf := fpdf.New("P", "mm", "A4", "")
+	pdf.AddPage()
+	pdf.SetFont("Arial", "B", 16)
+	content := readTxt(contentFile)
+	pdf.Cell(40, 10, content)
+	err := pdf.OutputFileAndClose(path)
+	if err != nil {
 		errorResult()
-		return
 	}
+	output := map[string]interface{}{"success": true}
+	jsonString, _ := json.Marshal(output)
+	fmt.Println(string(jsonString))
+}
+
+func main() {
+	// if len(os.Args) > 4 {
+	// 	errorResult()
+	// 	return
+	// }
 
 	filePath := os.Args[1]
+	fileOperation := os.Args[2]
+	contentFile := os.Args[3]
 
 	fileType := getFileType(filePath)
 
-	// fmt.Println(fileType)
-	if fileType == "xlsx" {
-		ReadXLSX(filePath)
-	} else {
-		readDocs(filePath)
+	if fileOperation == "r" {
+		if fileType == "xlsx" {
+			ReadXLSX(filePath)
+		} else {
+			readDocs(filePath)
+		}
+	} else if fileOperation == "w" {
+		writePdf(filePath, contentFile)
 	}
 }

@@ -1,6 +1,5 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { auth } from "@/auth";
-import { handleLogout } from "@/app/_actions";
+import { auth, signOut } from "@/auth";
 
 import Image from "next/image";
 import Link from "next/link";
@@ -25,6 +24,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { handleLogout } from "@/app/_actions";
 
 const Header = async () => {
   const session = await auth();
@@ -59,7 +59,12 @@ const Header = async () => {
           <DropdownMenuItem>Settings</DropdownMenuItem>
           <DropdownMenuItem>Support</DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>Logout</DropdownMenuItem>
+          <DropdownMenuItem>
+            <Link href="/api/auth/signout">
+              <Button type="submit" variant={"destructive"}>Logout</Button>
+            </Link>
+          </DropdownMenuItem>
+
         </DropdownMenuContent>
       </DropdownMenu>
     </header>

@@ -17,17 +17,17 @@ const getBasePath = () => {
   return basePath;
 };
 
-const readDir = async (
+export const readDir = async (
   directoryPath: string,
   includeHidden: boolean,
-): Promise<{ success: boolean; files?: string[] }> => {
+): Promise<{ success: boolean; data?: object }> => {
   try {
     const basePath = getBasePath();
+    const path = `${basePath}${directoryPath}`;
     let child: ChildProcessWithoutNullStreams;
 
-    if (includeHidden)
-      child = spawn("ls", ["-A", `${basePath}${directoryPath}`]);
-    else child = spawn("ls", [`${basePath}${directoryPath}`]);
+    if (includeHidden) child = spawn("ls", ["-A", path]);
+    else child = spawn("ls", [path]);
     const output: string = await new Promise((resolve, reject) => {
       let data = "";
       child.stdout.on("data", (chunk: Buffer) => {
@@ -46,8 +46,15 @@ const readDir = async (
     const files = output
       .split("\n")
       .slice(0, -1)
-      .filter((file: string) => !ignoreDirs.includes(file));
-    return { success: true, files };
+      .filter((file) => !ignoreDirs.includes(file));
+    return {
+      success: true,
+      data: {
+        absPath: path,
+        path: directoryPath,
+        files,
+      },
+    };
   } catch (err) {
     console.error(err);
     return { success: false };
@@ -63,11 +70,22 @@ export const checkDir = async (path: string) => {
   }
 };
 
-const makeDir = async (directoryPath: string) => {
+export const isDir = async (directoryPath: string) => {
+  try {
+    const basePath = getBasePath();
+    const path = `${basePath}${directoryPath}`;
+    const stats = await promises.stat(path);
+    return stats.isDirectory();
+  } catch (err) {
+    return false;
+  }
+};
+
+export const makeDir = async (directoryPath: string) => {
   try {
     const basePath = getBasePath();
     const dirData = await checkDir(`${basePath}${directoryPath}`);
-    if (dirData.success) return { success: false, message: "Folder Exists" };
+    if (dirData.success) return { success: false };
 
     await promises.mkdir(`${basePath}${directoryPath}`);
     return { success: true };
@@ -76,17 +94,17 @@ const makeDir = async (directoryPath: string) => {
   }
 };
 
-const removeDir = async (directoryPath: string) => {
+export const removeDir = async (directoryPath: string) => {
   try {
     const basePath = getBasePath();
     await promises.rmdir(`${basePath}${directoryPath}`);
     return { success: true };
   } catch (err) {
-    return { success: false, message: "No directory found" };
+    return { success: false };
   }
 };
 
-const readFile = async (filePath: string) => {
+export const readFile = async (filePath: string) => {
   try {
     const basePath = getBasePath();
     const path = `${basePath}${filePath}`;
@@ -94,15 +112,15 @@ const readFile = async (filePath: string) => {
     const fileext = files[files.length - 1]?.split(".")[1] ?? "";
 
     if (!otherFiles.includes(fileext)) {
-      const body = await promises.readFile(path, "utf-8");
-      return { success: true, body };
+      const data = await promises.readFile(path, "utf-8");
+      return { success: true, data };
     }
     let child: ChildProcessWithoutNullStreams;
     if (imageFiles.includes(fileext))
       child = spawn("tesseract", [path, "stdout"]);
-    else child = spawn("./conv", [path]);
+    else child = spawn("./go-conv/conv", [path, "r", ""]);
 
-    const body: string = await new Promise((resolve, reject) => {
+    const data:string = await new Promise((resolve, reject) => {
       let data = "";
       child.stdout.on("data", (chunk: Buffer) => {
         data += chunk.toString();
@@ -116,9 +134,15 @@ const readFile = async (filePath: string) => {
         }
       });
     });
-    if (docFiles.includes(fileext)) return JSON.parse(body) as object;
+    if (docFiles.includes(fileext)) {
+      const {text, success} = JSON.parse(data) as object as {text:string, success:boolean}
+      return {
+        data:text,
+        success,
+      };
+    }
 
-    return { success: true, body };
+    return { success: true, data };
   } catch (error) {
     console.log(error);
 
@@ -126,14 +150,51 @@ const readFile = async (filePath: string) => {
   }
 };
 
-const removeFile = async (filePath: string) => {
+export const writeFile = async (filePath: string, content: string) => {
+  try {
+    const basePath = getBasePath();
+    const path = `${basePath}${filePath}`;
+    const files = filePath.split("/");
+    const fileext = files[files.length - 1]?.split(".")[1] ?? "";
+
+    if (!otherFiles.includes(fileext)) {
+      await promises.writeFile(path, content);
+      return { success: true };
+    }
+    await promises.writeFile(".temp.txt", content);
+    let child: ChildProcessWithoutNullStreams;
+    if (docFiles.includes(fileext))
+      child = spawn("./go-conv/conv", [path, "w", content]);
+
+    const data = await new Promise((resolve, reject) => {
+      let data = "";
+      child.stdout.on("data", (chunk: Buffer) => {
+        data += chunk.toString();
+      });
+      child.on("error", reject);
+      child.on("close", (code: number) => {
+        if (code === 0) {
+          resolve(data);
+        } else {
+          reject(new Error(`Failed to read directory: ${code}`));
+        }
+      });
+    });
+
+    return { success: true };
+  } catch (error) {
+    console.log(error);
+
+    return { success: false };
+  }
+};
+
+export const removeFile = async (filePath: string) => {
   try {
     const basePath = getBasePath();
     await promises.rm(`${basePath}${filePath}`);
     return { success: true };
   } catch (err) {
-    return { success: false, message: "No file found" };
+    return { success: false };
   }
 };
-
-export { readDir, makeDir, removeDir, readFile, removeFile };
