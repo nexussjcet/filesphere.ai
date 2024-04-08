@@ -102,6 +102,10 @@ const config = {
         aurora: "aurora 60s linear infinite",
         shimmer: "shimmer 2s linear infinite",
       },
+      gridTemplateColumns: {
+        'auto-fill-100': 'repeat(auto-fill, minmax(100px, 1fr))',
+        'auto-fit-100': 'repeat(auto-fit, minmax(100px, 1fr))',
+      },
     },
   },
   plugins: [
