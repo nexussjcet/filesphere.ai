@@ -43,6 +43,9 @@ export const EmptyTrigger = () => {
     }, [search])
 
     function handleSearch() {
+
+        if (search.length === 0) return;
+
         setStatus("searching")
 
         mutate({
@@ -90,12 +93,12 @@ export const EmptyTrigger = () => {
                 return <SimpleCommandItem>
                     <>error, retry searching <ChevronRight /></>
                 </SimpleCommandItem>
-            default: return <SimpleCommandGroup>
+            default: return <SimpleCommandGroup className="w-full flex flex-row">
                 <Timeline/>
             </SimpleCommandGroup>
         }
     }
-    return <CommandEmpty className="flex flex-row justify-center p-6">
+    return <CommandEmpty className="flex flex-row justify-center items-center py-6">
         <Switcher />
     </CommandEmpty>
 }

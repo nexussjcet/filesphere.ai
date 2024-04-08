@@ -3,7 +3,7 @@ import { type State } from "@/initiative/state";
 import type { CTX } from "@/server/api/root";
 import z, { type input as Input, type infer as Infer } from "zod";
 
-const fileEnum = z.enum(["markdown", "html"]);
+const fileEnum = z.string();
 
 const status = z.object({
   status: z.union([
@@ -122,7 +122,7 @@ export const Schema = {
       "When action requires to open some file from source, to continue in execution order. ",
     )
     .args(z.object({ fileSource: z.string() }))
-    .returns(status),
+    .returns(z.object({ fileSource: z.string() })),
 
   summarizeText: z
     .function()

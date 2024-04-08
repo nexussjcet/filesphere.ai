@@ -50,12 +50,22 @@ State: {state_description}
 Output: `;
 
 export const defaultPrompt = new PromptTemplate({
-  inputVariables: ["type_description", "format_instructions", "input_prompt", "state_description"],
+  inputVariables: [
+    "type_description",
+    "format_instructions",
+    "input_prompt",
+    "state_description",
+  ],
   template: defaultPromptTemplate,
 });
 
 export const chainedActionPrompt = new PromptTemplate({
-  inputVariables: ["type_description", "format_instructions", "input_prompt", "state_description"],
+  inputVariables: [
+    "type_description",
+    "format_instructions",
+    "input_prompt",
+    "state_description",
+  ],
   template: ChainedPromptTemplate,
 });
 
@@ -66,8 +76,8 @@ export const outputToJson = (output: unknown) => {
 export const prepareExample = (examples: Example, stateTitle = "State") => {
   const format_instructions = `${examples
     .map((example) => {
-      const line = `Input: ${example.Input}\n${example.State && stateDescription(example.State, stateTitle, ", ") + "\n"}Output: ${outputToJson(
-        example.Output
+      const line = `Input: ${example.Input}\n${stateDescription(example.State, stateTitle, ", ")}Output: ${outputToJson(
+        example.Output,
       )}`;
       return line;
     })
@@ -77,14 +87,13 @@ export const prepareExample = (examples: Example, stateTitle = "State") => {
 };
 
 export const chainedMessages = ChatPromptTemplate.fromMessages([
-  new MessagesPlaceholder("system_message"),
-  new MessagesPlaceholder("example_message"),
+  // new MessagesPlaceholder("system_message"),
+  // new MessagesPlaceholder("example_message"),
   new MessagesPlaceholder("last_message"),
 ]);
 
 export const prepareChatFromExample = (examples: Example) =>
-  examples
-    .flatMap((example) => [
-      new HumanMessage(example.Input),
-      new AIMessage(outputToJson(example.Output)),
-    ]);
+  examples.flatMap((example) => [
+    new HumanMessage(example.Input),
+    new AIMessage(outputToJson(example.Output)),
+  ]);

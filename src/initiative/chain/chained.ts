@@ -93,7 +93,7 @@ export type ChainFunctions<A extends AvailableActions, U extends State, P> = (
 
 export type ChainExample<A extends AvailableActions, U extends State> = {
   Input: string;
-  State?: Partial<StateToValues<U>>;
+  State?: Partial<Input<ZodObject<U>>>;
   Output: Array<Partial<GetFirstParamFunction<A>>>;
 }[];
 

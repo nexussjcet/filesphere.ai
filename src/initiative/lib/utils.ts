@@ -6,9 +6,10 @@ ${typeName ? `\t${typeName}: ` : ""}${str}
 };
 
 export const stateDescription = (
-  state: object,
+  state?: object,
   title = "Current State:",
   sep = "\n\t"
 ) => {
-  return `${title}${Object.values(state).join(sep)}`;
+  if (!state) return "";
+  return `${title}${Object.values(state).join(sep)}\n`
 };
