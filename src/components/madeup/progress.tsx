@@ -8,11 +8,10 @@ import {
   Send,
   Shrink,
 } from "lucide-react";
-import React, { ComponentProps } from "react";
 
 import { convertFileFormat as ConvertFileFormat } from "../instances/convertFileFormat";
 import { findOneContact as FindOneContact } from "../instances/findContact";
-import { readFile as ReadFile } from "../instances/readFile";
+import { ReadFile } from "../instances/readFile";
 import { searchFile as SearchFile } from "../instances/searchFile";
 import { sentEmail as SentEmail } from "../instances/sentEmail";
 import { summarizeText as SummarizeText } from "../instances/summarizeText";
@@ -62,35 +61,40 @@ const getLogo = (value: keyof ChainReturn<typeof Schema>) => {
 export type TimelineProps = Partial<ChainReturn<typeof Schema>>;
 
 const Timeline: React.FC = () => {
-
-  const { data } = TimeLineState()
+  const { data } = TimeLineState();
   return (
     <ol className="timeline max-w-700 mx-auto flex flex-col border-l-2 border-gray-200 py-8 pl-8 text-base">
-      {data && Object.entries(data).map(([key, value], index) => {
-        const Component = getComponent(key as keyof ChainReturn<typeof Schema>);
+      {data &&
+        Object.entries(data).map(([key, value]) => {
+          const Component = getComponent(
+            key as keyof ChainReturn<typeof Schema>,
+          );
 
-        return (
-          <li key={key} className="timeline-item mt-8 flex gap-8">
-            <span className="timeline-item-icon -ml-14 flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-gray-100 text-gray-400">
-              {getLogo(key as keyof ChainReturn<typeof Schema>)}
-            </span>
-            <div
-              className={`timeline-item-description flex w-[300px] items-center rounded-xl ${value.permission
-                ? "bg-green-200"
-                : !value.permission
-                  ? "bg-red-400"
-                  : ""
+          return (
+            <li key={key} className="timeline-item mt-8 flex gap-8">
+              <span className="timeline-item-icon -ml-14 flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-gray-100 text-gray-400">
+                {getLogo(key as keyof ChainReturn<typeof Schema>)}
+              </span>
+              <div
+                className={`timeline-item-description flex w-[300px] items-center rounded-xl ${
+                  value.permission
+                    ? "bg-green-200"
+                    : !value.permission
+                      ? "bg-red-400"
+                      : ""
                 } p-5`}
-            >
-              <p className="flex items-center gap-5 rounded-xl">
-                {Component && ("value" in value) &&
-                  <Component // @ts-ignore
-                    data={value.value} />}
-              </p>
-            </div>
-          </li>
-        );
-      })}
+              >
+                <p className="flex items-center gap-5 rounded-xl">
+                  {Component && "value" in value && (
+                    <Component // @ts-ignore
+                      data={value.value}
+                    />
+                  )}
+                </p>
+              </div>
+            </li>
+          );
+        })}
     </ol>
   );
 };

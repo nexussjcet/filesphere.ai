@@ -17,9 +17,7 @@ export const NextConfig = {
     Google({
       clientId: env.GOOGLE_CLIENT_ID,
       clientSecret: env.GOOGLE_SECRET,
-      checks: ["none"],
       authorization: {
-        url: "https://accounts.google.com/o/oauth2/v2/auth?hd=company.com",
         params: {
           scope:
             "openid email profile https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/contacts.readonly https://www.googleapis.com/auth/gmail.send",

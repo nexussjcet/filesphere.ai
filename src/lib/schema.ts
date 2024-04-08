@@ -1,7 +1,7 @@
 import { type AvailableActions } from "@/initiative/chain";
 import { type State } from "@/initiative/state";
 import type { CTX } from "@/server/api/root";
-import z, { input as Input, type infer as Infer } from "zod";
+import z, { type input as Input, type infer as Infer } from "zod";
 
 const fileEnum = z.enum(["markdown", "html"]);
 
@@ -30,7 +30,9 @@ export const UserState = {
     .optional(),
   selected_A_Contacts: z
     .array(z.string())
-    .transform((x) => `User selected his contacts with names ${x.join(", ")} in UI`)
+    .transform(
+      (x) => `User selected his contacts with names ${x.join(", ")} in UI`,
+    )
     .optional(),
   selected_A_Files: z
     .array(z.string())
