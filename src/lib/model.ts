@@ -21,7 +21,7 @@ import {
   ZodTransformer,
   z,
 } from "zod";
-import { makeDir, readFile, removeDir } from "@/app/fs-api";
+import { makeDir, readFile, removeDir, removeFile } from "@/app/fs-api";
 
 export const model = new TogetherAI({
   modelName: "mistralai/Mixtral-8x7B-Instruct-v0.1",
@@ -54,7 +54,12 @@ export const init = implementChain(Schema, UserState, materials, {
       const data = await readFile(fileSource);
       return { status: data.success, text: data.data! };
     },
-    deleteFile: async () => await Promise.resolve({ status: "success" }),
+    deleteFile: async ({fileSource}) => {
+      const data = await removeFile(fileSource)
+      return {
+        status: data.success ? "success" : "failed",        
+      }
+    },
     convertFileFormat: async ({
       fileDestinationType,
       fileSourceType,
