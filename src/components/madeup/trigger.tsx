@@ -22,8 +22,8 @@ export const EmptyTrigger = () => {
         onError: () => setStatus("error"),
         onSuccess: (data) => {
             setSuccessData(data)
-            toast("Event has been created", {
-                description: "Sunday, December 03, 2023 at 9:00 AM",
+            toast("Session Executed", {
+                description: (new Date()).toLocaleString(),
                 action: {
                     label: "Undo",
                     onClick: () => console.log("Undo"),
