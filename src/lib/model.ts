@@ -129,13 +129,11 @@ export const init = implementChain(Schema, UserState, materials, {
     },
     {
       Input:
-        "Find and read markdown file 'file.md' and summarize it, sent it to user named 'Rajat'",
+        "read file '/somefolder/file.md' and summarize it, sent it to user named 'abc@gmail.com'",
       Output: [
-        { searchFile: { fileName: "/somefolder/file.md" } },
-        { readFile: { fileSource: "unknown", fileType: "markdown" } },
+        { readFile: { fileSource: "/somefolder/file.pdf", fileType: "pdf" } },
         { summarizeText: { text: "unknown" } },
-        { findOneContact: { name: "Rajat" } },
-        { sentEmail: { email: "unknown", text: "unknown" } },
+        { sentEmail: { email: "abc@gmail.com", text: "unknown" } },
       ],
     },
   ],

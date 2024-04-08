@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
-import { chain, init } from "@/lib/model";
+import { chain, init, materials } from "@/lib/model";
 import { executeChainActions, implementChain } from "@/initiative/chain";
 import { Schema, UserState, permissionZod } from "@/lib/schema";
 import { State } from "@/initiative/state";
@@ -25,6 +25,8 @@ export const chainRouter = createTRPCRouter({
 
       const res = await chain.invoke(prompt, {
         state
+        // ...
+        // state ? {state: materials?.stateZod(state)} : {}
       });
 
       console.log(
