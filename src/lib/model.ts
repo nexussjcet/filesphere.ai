@@ -80,7 +80,7 @@ export const init = implementChain(Schema, UserState, materials, {
     searchOneFile: async () => await Promise.resolve({ fileSource: "success" }),
     openFile: async ({ fileSource }) => ({ fileSource }),
     sentEmail: async ({ email, text }) => {
-      await sendEmail(email, "Email from Drive AI", text);
+      await sendEmail(email, "Email from FileSphere.ai", text);
       return { status: "success" };
     },
     summarizeText: async ({ text }) => {

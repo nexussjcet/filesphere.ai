@@ -119,9 +119,15 @@ export const rawSafeParseState = <S extends State>(
     
     const rawSchema = schema;
 
-    const data: Infer<typeof rawSchema> = rawSchema.parse(response);
+    const res = rawSchema.safeParse(response);
+    if (res.success) {
+      return {
+        data:res.data,
+        success: true,
+      };
+    }
     return {
-      data,
+      error: response,
       success: true,
     };
   } catch (e) {
