@@ -21,6 +21,9 @@ export async function getUserDeviceInfo(): Promise<string | undefined> {
 
 async function setupOAuth2Client() {
   const session = await auth();
+
+  console.log(session)
+
   if (!session) return notFound();
   const oauth2Client = new google.auth.OAuth2({});
   oauth2Client.setCredentials({
@@ -81,13 +84,14 @@ async function listGoogleContacts() {
 async function sendEmail(recipient: string, subject: string, body: string) {
   try {
     const oauth2Client = await setupOAuth2Client();
-    const session = await auth();
-    if (!oauth2Client || !session?.user) return;
+    // const session = await auth();
+    if (!oauth2Client) return;
 
     const gmail = google.gmail({ version: "v1", auth: oauth2Client });
+    const session = await auth()
 
     const rawEmail = makeRawEmail(
-      session.user.email ?? " ",
+      session?.user.email ?? "",
       recipient,
       subject,
       body,
