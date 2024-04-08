@@ -62,14 +62,17 @@ export const createExtraction = async <U extends State, A extends AvailableActio
       input_prompt: Input,
     });
 
-    const response = (await chainedMessages.pipe(llm).invoke(
-      {
-        system_message: new SystemMessage(system_message),
-        example_message: exampleChat,
-        last_message: new HumanMessage(promptText.value),
-      },
-      invokeOptions
-    )) as string;
+    console.log(promptText.value);
+
+    const response = await llm.invoke(promptText.value)
+    // const response = (await chainedMessages.pipe(llm).invoke(
+    //   {
+    //     system_message: new SystemMessage(system_message),
+    //     example_message: exampleChat,
+    //     last_message: new HumanMessage(promptText.value),
+    //   },
+    //   invokeOptions
+    // )) as string;
 
     const validated = safeParse<S>(combinedZod, response);
 

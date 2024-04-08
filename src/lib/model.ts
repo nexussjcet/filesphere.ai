@@ -105,7 +105,10 @@ export const init = implementChain(Schema, UserState, materials, {
       ],
     },
     {
-      Input: "Read the file 'file.md' ",
+      Input: "Read this pdf",
+      State: {
+        selected_A_Files: ["file.pdf"],
+      },
       Output: [
         { readFile: { fileSource: "file.md", fileSourceType: "markdown" } },
       ],
@@ -128,7 +131,7 @@ export const init = implementChain(Schema, UserState, materials, {
       Input:
         "Find and read markdown file 'file.md' and summarize it, sent it to user named 'Rajat'",
       Output: [
-        { searchFile: { fileName: "file.md" } },
+        { searchFile: { fileName: "/somefolder/file.md" } },
         { readFile: { fileSource: "unknown", fileType: "markdown" } },
         { summarizeText: { text: "unknown" } },
         { findOneContact: { name: "Rajat" } },

@@ -71,7 +71,7 @@ const Timeline: React.FC = () => {
 
         return (
           <li key={key} className="timeline-item mt-8 flex gap-8">
-            <span className="timeline-item-icon -ml-14 flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-gray-100 text-gray-400">
+            <span className="timeline-item-icon -ml-10 flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-gray-100 text-gray-400">
               {getLogo(key as keyof ChainReturn<typeof Schema>)}
             </span>
             <div

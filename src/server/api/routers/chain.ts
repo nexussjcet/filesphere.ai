@@ -20,6 +20,9 @@ export const chainRouter = createTRPCRouter({
 
       console.log(prompt, state);
 
+      if (prompt.length === 0)
+        return;
+
       const res = await chain.invoke(prompt, {
         state
       });
