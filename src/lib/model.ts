@@ -78,7 +78,7 @@ export const init = implementChain(Schema, UserState, materials, {
     },
     searchFile: async () => await Promise.resolve([{ fileSource: "success" }]),
     searchOneFile: async () => await Promise.resolve({ fileSource: "success" }),
-    openFile: async () => await Promise.resolve({ status: "success" }),
+    openFile: async ({ fileSource }) => ({ fileSource }),
     sentEmail: async ({ email, text }) => {
       await sendEmail(email, "Email from Drive AI", text);
       return { status: "success" };
