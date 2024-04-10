@@ -1,29 +1,51 @@
-# Create T3 App
+![Cover Pic](/public/cover.png)
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+# File Sphere AI
 
-## What's next? How do I make an app with this?
+Your Smartest Productivity AI for File Management.
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+Let me show you the AI we cooked that can do multiple actions for file management with simple prompt.
+Hackathon project by NEXUS-SJCET cooked on 6,7,8 on Jyothi Engineering College Cheruthurithy Thrissur, Hackathena'24
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+### Example
+- User clicked on any file
+- Type "Read this file, summarize it and sent to abc@example.com and delete it"
+- AI: Done 😎
 
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Drizzle](https://orm.drizzle.team)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+That's the power of LAM ⚡️
 
-## Learn More
+Our LLM can do anything on files. In single prompt, it will do everything sequentially. And it is faster.
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+<video height="640" controls>
+    <source src="/public/file.ai.mp4" type="video/mp4">
+Your browser does not support the video tag.
+</video>
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
+### Unit Features
+- Read files
+- Summarize files
+- Sent to email
+- Delete files
+- Convert file to another type
+- Etc
 
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
+### Available File Types
+> PDF, TXT, DOCX, XLSX, PPTX, JPG, PNG etc
 
-## How do I deploy this?
+### Core Technology
 
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+We actually created a package for converting LLM to LAM. Build on top of zod as langchain.js extension. It is called [Initiative](https://npmjs.com/package/initiative).
+
+![Initiative](/public/initiative.png)
+
+```bash
+npm install initiative
+```
+
+
+### Team NEXUS-SJCET
+- [Rajat Sandeep](https://github.com/rajatsandeepsen)
+- [Reenphy George](https://github.com/reenphygeorge)
+- [Sanu KJ](https://github.com/sanukjoseph)
+- [Joswin Shogi](https://github.com/joswinshogi)
+- [Jovit Mathew](https://github.com/Jovit-Mathew236)
