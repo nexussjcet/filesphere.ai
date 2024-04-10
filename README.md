@@ -15,11 +15,10 @@ Hackathon project by NEXUS-SJCET cooked on 6,7,8 on Jyothi Engineering College C
 That's the power of LAM ⚡️
 
 Our LLM can do anything on files. In single prompt, it will do everything sequentially. And it is faster.
+Also it can understand what "this file" means. Because the system can keep track of user interations on UI called UIState and Server called AIState.
 
-<video height="640" controls>
-    <source src="/public/file.ai.mp4" type="video/mp4">
-Your browser does not support the video tag.
-</video>
+https://github.com/nexus-sjcet/filesphere.ai/assets/93584596/08f8ecae-cff2-4bcf-8bf8-b08e4d39c2ed
+
 
 ### Unit Features
 - Read files
